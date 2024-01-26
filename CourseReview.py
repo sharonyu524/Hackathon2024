@@ -6,6 +6,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
+import json 
 
 driver = webdriver.Chrome()
 driver.get("https://penncoursereview.com/department/CIS")
@@ -43,18 +44,20 @@ def extract_course(soup):
                 courseReviews[title] = {}
                 print(title)
             elif i == 2:
-                courseReviews[title]['Course Quality'] = int(j.get_text())
+                courseReviews[title]['Course Quality'] = j.get_text()
                 print(j.get_text())
             elif i == 3:
-                courseReviews[title]['Instructor Quality'] = int(j.get_text())
+                courseReviews[title]['Instructor Quality'] = j.get_text()
                 print(j.get_text())
             elif i == 4:
-                courseReviews[title]['Difficulty'] = int(j.get_text())
+                courseReviews[title]['Difficulty'] = j.get_text()
                 print(j.get_text())
             elif i == 5:
-                courseReviews[title]['Workload'] = int(j.get_text())
+                courseReviews[title]['Workload'] = j.get_text()
                 print(j.get_text())
             
+    with open('courseRatings.json', 'w') as fp:
+        json.dump(courseReviews, fp)
     print(courseReviews)
 
     return courseReviews
