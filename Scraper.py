@@ -11,6 +11,7 @@ def get_page(url):
         soup = BeautifulSoup(response.content, "html.parser")
     return soup
 
+#  TODO: get course descriptions for each course
 def extract_course(soup):
     filtered_courses = []
     
