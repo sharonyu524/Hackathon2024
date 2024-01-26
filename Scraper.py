@@ -12,6 +12,7 @@ def get_page(url):
     return soup
 
 def extract_course(soup):
+    filtered_courses = []
     
     # courseBlocks = soup.find_all('div', class_='courseblock')
     # courseTitles = soup.find_all('p', class_='courseblocktitle noindent')
@@ -19,9 +20,14 @@ def extract_course(soup):
 
     # course['title'] = soup.find_all('strong')
     # course['description'] = soup.find('p').text.strip()
-    course = [courseTitles.get_text() for courseTitles in courseTitles]
-    print(course)
-    return course
+    courses = [courseTitles.get_text() for courseTitles in courseTitles]
+    for course in courses:
+        if int(course[4]) >= 5:
+            filtered_courses.append(course)
+   
+    print(filtered_courses)
+    print(len(filtered_courses))
+    return filtered_courses
 
 def main():
     url = "https://catalog.upenn.edu/courses/cis/"
