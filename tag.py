@@ -17,21 +17,38 @@ from langchain_community.chat_models import ChatOpenAI
 from langchain_openai import ChatOpenAI
 from langchain_community.document_loaders import JSONLoader
 from langchain.chains import create_tagging_chain, create_extraction_chain
+from langchain_core.pydantic_v1 import BaseModel, Field
+from langchain.chains import create_tagging_chain_pydantic
 
-
+# class Tags(BaseModel):
+#     FirstCareer: str = Field (
+#         ..., enum  = ["Software Engineer", "Web Development", "Cyber Security", "Hardware Design","Product Manager","Machine Learning","Cloud Computing","Network Architect","Mobile App Developer","Academia", "Research","Data Science", "Artificial Intelligence"],
+#         )
+#     secondCareer: str = Field (
+#         ..., enum  = ["Software Engineer", "Web Development", "Cyber Security", "Hardware Design","Product Manager","Machine Learning","Cloud Computing","Network Architect","Mobile App Developer","Academia", "Research","Data Science", "Artificial Intelligence"],
+#         )
 schema = {
     "properties": {
-        "career": {
+        "First career": {
             "type": "string",
-            # "enum": ["Software Engineer", "Web Development", "Cyber Security", "Hardware Design","Product Manager","Machine Learning","Cloud Computing","Network Architect","Mobile App Developer","Academia", "Research","Data Science", "Artificial Intelligence"],
+            "enum": ["Software Engineer", "Web Development", "Cyber Security", "Hardware Design","Product Manager","Machine Learning","Cloud Computing","Network Architect","Mobile App Developer","Academia", "Research","Data Science", "Artificial Intelligence"],
             "description": "The career the student will be ready for after taking the course. Every course must have at least one career."
             
-            },   
+            }, 
+        "Second career": {
+            "type": "string",
+            "enum": ["Software Engineer", "Web Development", "Cyber Security", "Hardware Design","Product Manager","Machine Learning","Cloud Computing","Network Architect","Mobile App Developer","Academia", "Research","Data Science", "Artificial Intelligence"],
+            "description": "The career the student will be ready for after taking the course. Every course must have at least one career."
+
+        },  
     },
-    "required": ["career"],
+    "required": ["First career", "Second career"],
 
 }
-llm = ChatOpenAI(openai_api_key = constants.API_KEY)
+
+
+os.environ["OPENAI_API_KEY"] = constants.API_KEY
+llm = ChatOpenAI(temperature=0, model = "gpt-3.5-turbo-0613")
 chain = create_tagging_chain(schema,llm)
 
 
@@ -41,16 +58,26 @@ with open(json_file_path, 'r') as json_file:
 # print(type(data))
 tags = {}
 for course, description in data.items():
-    print(course)
-    response = chain.run(description)
-    print(response)
-    if response:
-        tags[course] = response['career']
+    # print(course)
+    response = chain.invoke(description)
+    # print(response)
+    if response["text"] != {}:
+        if response['text']['First career']:
+            tags[course] = [response['text'].get('First career', 'N/A')]
+
+        if response['text']['Second career']:
+            tags[course].append(response['text'].get('Seond career', 'N/A'))
     else:
         tags[course] = []
-    # print(tags)
+
+
+    # if response.secondCareer in response['text']:
+    #     tags[course].append(response['text']['Second career'])
+    # else:
+    #     tags[course] = []
+# print(tags)
 with open('careerTags.json', 'w') as fp:
-        json.dump(tags, fp)
+    json.dump(tags, fp)
     # print(len(filtered_courses))
 
 # if len(sys.argv) != 2:
