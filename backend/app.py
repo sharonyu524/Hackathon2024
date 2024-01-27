@@ -6,12 +6,12 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
-with open('mergedData.json', 'r') as json_file:
+with open('../mergedData.json', 'r') as json_file:
     data = json.load(json_file)
 
 # print(type(data))
 
-def calculate_ratings(courses, user_preferences):
+def calculate_ratings(user_preferences):
     # user_preferences is a dictionary of user preferences????
     # user_preferences = {
     #    "career": "Software Engineer",
@@ -42,30 +42,30 @@ def calculate_ratings(courses, user_preferences):
         # calculate weighted average
         # add to ratings dictionary
        
-        if user_preferences["career"] == info["careerTags"]:
+        if user_preferences["careerPath"] == info["careerTags"]:
             tagVariable = 1
-        if user_preferences["most important"] == "course quality":
+        if user_preferences["categories"] == "Course Qquality":
             val = info.get("Course Quality", "N/A")
             if val == "N/A":
                 courseQualityVariable = 0
             else:
                 courseQualityVariable = float(info["Course Quality"])
             courseQualityCoefficient = 0.2
-        elif user_preferences["most important"] == "instructor quality":
+        elif user_preferences["categories"] == "Instructor Quality":
             val = info.get("Instructor Quality", "N/A")
             if val == "N/A":
                 instructorQualityVariable = 0
             else:
                 instructorQualityVariable = float(info["Instructor Quality"])
             instructorQualityCoefficient = 0.2
-        elif user_preferences["most important"] == "difficulty":
+        elif user_preferences["categories"] == "Difficulty":
             val = info.get("Difficulty", "N/A")
             if val == "N/A":
                 difficultyVariable = 0
             else:
                 difficultyVariable = float(info["Difficulty"])
             difficultyCoefficient = 0.2
-        elif user_preferences["most important"] == "workload":
+        elif user_preferences["categories"] == "Workload":
             val = info.get("Workload", "N/A")
             if val == "N/A":
                 workloadVariable = 0
@@ -81,41 +81,72 @@ def calculate_ratings(courses, user_preferences):
     return ratings
 
 
-def get_top_courses(courses, num_courses):
+def get_top_courses(courses, graduation, current):
     # return a list of the top num_courses courses
+    if (current == graduation):
+        numCourses = 2
+    if (current == "24Fall" and graduation == "25Spring"
+        or current == "24Spring" and graduation == "24Fall"
+        or current == "25Spring" and graduation == "25SFall"):
+        numCourses = 4
+    
+    elif (current == "24Spring" and graduation == "25Spring"):
+        numCourses = 6
+    elif (current == "24Fall" and graduation == "25Spring"):
+        numCourses = 8
+    else:
+        numCourses = 0
     sorted_courses = sorted(courses.items(), key=lambda x: x[1]['Average'], reverse=True)
-    top_fall_courses = [course for course, details in sorted_courses if 'Fall' in details['Semester Offered']][:2]
-    top_spring_courses = [course for course, details in sorted_courses if 'Spring' in details['Semester Offered']][:2]
-    top_courses = top_fall_courses + top_spring_courses
+    top_fall_courses = [course for course, details in sorted_courses if 'Fall' in details['Semester Offered']]
+    top_spring_courses = [course for course, details in sorted_courses if 'Spring' in details['Semester Offered']]
+
+    unique_fall_courses = top_fall_courses
+    unique_spring_courses = [course for course in top_spring_courses if course not in top_fall_courses]
+
+    # Select the top courses based on numCourses
+    selected_fall_courses = unique_fall_courses[:numCourses // 2]
+    selected_spring_courses = unique_spring_courses[:numCourses // 2]
+
+    top_courses = selected_fall_courses + selected_spring_courses
+    # top_courses = top_fall_courses + top_spring_courses
     print(top_courses)
 
     return top_courses
 
-@app.route('/calculate_ratings', methods=['POST'])
-def api_calculate_ratings():
-    data = request.json  # Get data from POST request
-    user_preferences = data.get('user_preferences')
-    courses = data.get('courses')
-
-    if not user_preferences or not courses:
-        return jsonify({'error': 'Missing user preferences or courses data'}), 400
-
-    ratings = calculate_ratings(courses, user_preferences)
-    return jsonify(ratings)
+# { user_preferences format 
+#       careerPath,
+#       currentSemester,
+#       graduation,
+#       categories
+#     };
 
 @app.route('/get_top_courses', methods=['POST'])
 def api_get_top_courses():
     data = request.json  # Get data from POST request
-    courses = data.get('courses')
+    user_preferences = data.get('user_preferences')
+    # courses = data.get('courses')
+
+    if not user_preferences:
+        return jsonify({'error': 'Missing user preferences or courses data'}), 400
+
+    ratings = calculate_ratings(user_preferences)
+    # jsonRatings = jsonify(ratings)
+
+
+
+    # data = request.json  # Get data from POST request
+    # courses = data.get('courses')
 
     # TODO: fix, numcourses should not be hardcoded
-    num_courses = data.get('num_courses', 4)  # Default to 4 courses
+    # num_courses = data.get('num_courses', 4)  # Default to 4 courses
 
-    if not courses:
-        return jsonify({'error': 'Missing courses data'}), 400
+    # if not courses:
+    #     return jsonify({'error': 'Missing courses data'}), 400
 
-    top_courses = get_top_courses(courses, num_courses)
+    top_courses = get_top_courses(ratings, user_preferences["graduation"], user_preferences["currentSemester"])
     return jsonify(top_courses)
+
+
 
     
 def main():
@@ -125,7 +156,7 @@ def main():
         "Graduation Year": "2025",
         "most important": "course quality",
     }
-    ave = calculate_ratings(data, user_preferences)
+    ave = calculate_ratings(user_preferences)
     get_top_courses(ave, 4)
 
 
