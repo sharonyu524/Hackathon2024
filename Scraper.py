@@ -22,10 +22,23 @@ def extract_course(soup):
     for course in courseInfo:
         courseTitle = course.find('strong').get_text()
         if int(courseTitle[4]) >= 5:
-            filteredCourses[courseTitle] = {}
-            courseDescription = course.find('p', class_='courseblockextra noindent').get_text()
-            filteredCourses[courseTitle] = courseDescription
-    print(courseInfo)
+            cleanedTitle = courseTitle.replace('\u00a0', ' ')
+            filteredCourses[cleanedTitle] = {}
+            courseDescription = course.find_all('p', class_='courseblockextra noindent')
+            for i, j in enumerate(courseDescription):
+                if i == 0:
+                    courseDescription = j.get_text()
+                    # filteredCourses[courseTitle]["Description"] = courseDescription
+                    filteredCourses[cleanedTitle]["Description"] = courseDescription
+                if i == 1:
+                    SemesterOffered = j.get_text()
+                    
+                    listSemesterOffered = SemesterOffered.split()
+                    if len(listSemesterOffered) > 1:
+                        filteredCourses[cleanedTitle]["Semester Offered"] = [listSemesterOffered[0], listSemesterOffered[2]]
+                    elif len(listSemesterOffered) == 1:
+                        filteredCourses[cleanedTitle]["Semester Offered"] = [SemesterOffered]
+    # print(courseInfo)
 
     #     courseDescription = course.find_all('p', class_='courseblockextra noindent').get_text()
     #     filteredCourses[courseTitle] = courseDescription

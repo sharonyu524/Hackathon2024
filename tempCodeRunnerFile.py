@@ -1,7 +1,9 @@
-if response.FirstCareer in response['text']:
-    #     tags[course] = [response['text']['First career']]
-    # if response.secondCareer in response['text']:
-    #     tags[course].append(response['text']['Second career'])
-    # else:
-    #     tags[course] = []
-    # print(tags)
+for code, rating in ratingData.items():
+    #     print (code)
+    #     for title, description in mergedData.items():
+    #         print(title)
+    #         if code in title[4:8]:
+    #             mergedData[code]['Ratings'] = [rating['Course Quality'], rating['Instructor Quality'], rating['Difficulty'], rating['Workload']]
+    # # return mergedData
+    #     # mergedData[course]['ratings'] = ratingData[course]
+    # print(mergedData)

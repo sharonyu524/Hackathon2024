@@ -29,32 +29,40 @@ def extract_course(soup):
     courseReviews = {}
 
     courseRows = soup.find_all('div', class_='rt-tr-group')
-
-
+    # print(courseRows)
+    
 
     # TODO: filter out courses below 5000 
     for course in courseRows:
-        info = course.find_all('div', role='gridcell')
-        # print(len(info))
+        code = course.find('a').get_text()
+        if int(code[4]) >= 5:
+            print(code)
+            info = course.find_all('div', role='gridcell')
+            courseReviews[code[4:]] = {}
 
-        for i, j in enumerate(info):
-            # title = ''
-            if i == 1:
-                title = j.get_text()
-                courseReviews[title] = {}
-                print(title)
-            elif i == 2:
-                courseReviews[title]['Course Quality'] = j.get_text()
-                print(j.get_text())
-            elif i == 3:
-                courseReviews[title]['Instructor Quality'] = j.get_text()
-                print(j.get_text())
-            elif i == 4:
-                courseReviews[title]['Difficulty'] = j.get_text()
-                print(j.get_text())
-            elif i == 5:
-                courseReviews[title]['Workload'] = j.get_text()
-                print(j.get_text())
+            link = course.find('a')['href']
+            courseReviews[code[4:]]['Link'] = link
+
+
+            for i, j in enumerate(info):
+                
+                # title = ''
+                if i == 1:
+                    title = j.get_text()
+                    courseReviews[code[4:]]['Title'] = title
+                    # print(title)
+                elif i == 2:
+                    courseReviews[code[4:]]['Course Quality'] = j.get_text()
+                    # print(j.get_text())
+                elif i == 3:
+                    courseReviews[code[4:]]['Instructor Quality'] = j.get_text()
+                    # print(j.get_text())
+                elif i == 4:
+                    courseReviews[code[4:]]['Difficulty'] = j.get_text()
+                    # print(j.get_text())
+                elif i == 5:
+                    courseReviews[code[4:]]['Workload'] = j.get_text()
+                    # print(j.get_text())
             
     with open('courseRatings.json', 'w') as fp:
         json.dump(courseReviews, fp)

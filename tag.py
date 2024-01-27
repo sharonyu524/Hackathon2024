@@ -35,14 +35,14 @@ schema = {
             "description": "The career the student will be ready for after taking the course. Every course must have at least one career."
             
             }, 
-        "Second career": {
-            "type": "string",
-            "enum": ["Software Engineer", "Web Development", "Cyber Security", "Hardware Design","Product Manager","Machine Learning","Cloud Computing","Network Architect","Mobile App Developer","Academia", "Research","Data Science", "Artificial Intelligence"],
-            "description": "The career the student will be ready for after taking the course. Every course must have at least one career."
+        # "Second career": {
+        #     "type": "string",
+        #     "enum": ["Software Engineer", "Web Development", "Cyber Security", "Hardware Design","Product Manager","Machine Learning","Cloud Computing","Network Architect","Mobile App Developer","Academia", "Research","Data Science", "Artificial Intelligence"],
+        #     "description": "The career the student will be ready for after taking the course. Every course must have at least one career."
 
-        },  
+        # },  
     },
-    "required": ["First career", "Second career"],
+    "required": ["First career"],
 
 }
 
@@ -59,16 +59,16 @@ with open(json_file_path, 'r') as json_file:
 tags = {}
 for course, description in data.items():
     # print(course)
-    response = chain.invoke(description)
+    response = chain.invoke(description["Description"])
     # print(response)
     if response["text"] != {}:
         if response['text']['First career']:
             tags[course] = [response['text'].get('First career', 'N/A')]
 
-        if response['text']['Second career']:
-            tags[course].append(response['text'].get('Seond career', 'N/A'))
+        # if response['text']['Second career']:
+        #     tags[course].append(response['text'].get('Seond career', 'N/A'))
     else:
-        tags[course] = []
+        tags[course] = ["Software Engineer"]
 
 
     # if response.secondCareer in response['text']:
