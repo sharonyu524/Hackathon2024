@@ -1,11 +1,15 @@
 # import pandas as pd
+from flask import Flask, request, jsonify
 import json 
+from flask_cors import CORS
+
+app = Flask(__name__)
+CORS(app)
 
 with open('mergedData.json', 'r') as json_file:
     data = json.load(json_file)
 
 # print(type(data))
-
 
 def calculate_ratings(courses, user_preferences):
     # user_preferences is a dictionary of user preferences????
@@ -75,6 +79,8 @@ def calculate_ratings(courses, user_preferences):
         ratings[course]["Semester Offered"] = info["Semester Offered"]
     print(ratings)
     return ratings
+
+
 def get_top_courses(courses, num_courses):
     # return a list of the top num_courses courses
     sorted_courses = sorted(courses.items(), key=lambda x: x[1]['Average'], reverse=True)
@@ -84,6 +90,33 @@ def get_top_courses(courses, num_courses):
     print(top_courses)
 
     return top_courses
+
+@app.route('/calculate_ratings', methods=['POST'])
+def api_calculate_ratings():
+    data = request.json  # Get data from POST request
+    user_preferences = data.get('user_preferences')
+    courses = data.get('courses')
+
+    if not user_preferences or not courses:
+        return jsonify({'error': 'Missing user preferences or courses data'}), 400
+
+    ratings = calculate_ratings(courses, user_preferences)
+    return jsonify(ratings)
+
+@app.route('/get_top_courses', methods=['POST'])
+def api_get_top_courses():
+    data = request.json  # Get data from POST request
+    courses = data.get('courses')
+
+    # TODO: fix, numcourses should not be hardcoded
+    num_courses = data.get('num_courses', 4)  # Default to 4 courses
+
+    if not courses:
+        return jsonify({'error': 'Missing courses data'}), 400
+
+    top_courses = get_top_courses(courses, num_courses)
+    return jsonify(top_courses)
+
     
 def main():
 
@@ -97,4 +130,5 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    app.run(debug=True)
+    # main()
