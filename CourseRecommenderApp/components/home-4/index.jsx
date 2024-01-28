@@ -13,25 +13,6 @@ const index = () => {
       <Hero4 />
       {/* <!-- End Banner Section--> */}
 
-      <section className="job-categories">
-        <div className="auto-container">
-          <div className="sec-title text-center">
-            <h2>Popular Career Paths Categories</h2>
-            <div className="text">70+ Courses - 10+ Catogories</div>
-          </div>
-
-          <div
-            className="row "
-            data-aos="fade-up"
-            data-aos-anchor-placement="top-bottom"
-          >
-            {/* <!-- Category Block --> */}
-            <JobCategorie1 />
-          </div>
-        </div>
-      </section>
-      {/* End Job Categorie Section */}
-
       <Footer />
       {/* <!-- End Main Footer --> */}
     </>
