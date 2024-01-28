@@ -208,8 +208,6 @@ def api_get_top_courses():
     top_courses = get_top_courses(ratings, user_preferences["graduation"], user_preferences["currentSemester"])
     # print(top_courses)
     jsonTopCourses = jsonify(top_courses)
-    print('final')
-    print(jsonTopCourses.Stringify)
     return jsonTopCourses
 
 
