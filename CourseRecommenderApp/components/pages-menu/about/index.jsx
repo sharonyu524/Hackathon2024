@@ -16,9 +16,6 @@ const index = () => {
       <DefaulHeader />
       {/* <!--End Main Header --> */}
 
-      <Breadcrumb title="About Us" meta="About Us" />
-      {/* <!--End Page Title--> */}
-
       <section className="about-section-three">
         <div className="auto-container">
           <ImgBox />
