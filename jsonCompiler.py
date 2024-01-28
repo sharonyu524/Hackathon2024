@@ -77,7 +77,14 @@ def merge_data(descriptionData, careerTagsData, ratingData):
                 mergedData[title]['Workload'] = rating['Workload']
             # print (mergedData[title])
     return mergedData
+
+def find_all_tags(dict):
+    tags = set()
+    for course, tag in dict.items():
+        tags.add(tag[0])
     
+    print(tags)
+    # return tags
 def write_to_json(mergedData):
     with open('mergedData.json', 'w') as fp:
         json.dump(mergedData, fp)
@@ -88,8 +95,9 @@ def write_to_json(mergedData):
 
 def main():
     
-    finalData = merge_data(get_descriptions(description), get_careerTags(careerTags), get_ratings(ratings))
-    write_to_json(finalData)
+    # finalData = merge_data(get_descriptions(description), get_careerTags(careerTags), get_ratings(ratings))
+    # write_to_json(finalData)
+    find_all_tags(get_careerTags(careerTags))
 
 if __name__ == '__main__':
     main()

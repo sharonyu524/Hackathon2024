@@ -42,7 +42,7 @@ def calculate_ratings(user_preferences):
         # calculate weighted average
         # add to ratings dictionary
        
-        if user_preferences["careerPath"] == info["careerTags"]:
+        if user_preferences["careerPath"][0].label == info["careerTags"]:
             tagVariable = 1
         if user_preferences["categories"] == "Course Qquality":
             val = info.get("Course Quality", "N/A")
@@ -58,19 +58,33 @@ def calculate_ratings(user_preferences):
             else:
                 instructorQualityVariable = float(info["Instructor Quality"])
             instructorQualityCoefficient = 0.2
-        elif user_preferences["categories"] == "Difficulty":
+        elif user_preferences["categories"] == "Difficulty (High)":
             val = info.get("Difficulty", "N/A")
             if val == "N/A":
                 difficultyVariable = 0
             else:
                 difficultyVariable = float(info["Difficulty"])
             difficultyCoefficient = 0.2
-        elif user_preferences["categories"] == "Workload":
+        elif user_preferences["categories"] == "Difficulty (Low)":
+            val = info.get("Difficulty", "N/A")
+            if val == "N/A":
+                difficultyVariable = 0
+            else:
+                difficultyVariable = 5 - float(info["Difficulty"])
+            difficultyCoefficient = 0.2
+        elif user_preferences["categories"] == "Workload (High)":
             val = info.get("Workload", "N/A")
             if val == "N/A":
                 workloadVariable = 0
             else:
                 workloadVariable = float(info["Workload"])
+            workloadCoefficient = 0.2
+        elif user_preferences["categories"] == "Workload (Low)":
+            val = info.get("Workload", "N/A")
+            if val == "N/A":
+                workloadVariable = 0
+            else:
+                workloadVariable = 5 - float(info["Workload"])
             workloadCoefficient = 0.2
         
         weighted_average = (tagVariable * tagCoefficient) + (courseQualityVariable * courseQualityCoefficient) + (instructorQualityVariable * instructorQualityCoefficient) + (difficultyVariable * difficultyCoefficient) + (workloadVariable * workloadCoefficient)
@@ -149,15 +163,15 @@ def api_get_top_courses():
 
 
     
-def main():
+# def main():
 
-    user_preferences = {
-        "career": "Software Engineer",
-        "Graduation Year": "2025",
-        "most important": "course quality",
-    }
-    ave = calculate_ratings(user_preferences)
-    get_top_courses(ave, 4)
+#     user_preferences = {
+#         "career": "Software Engineer",
+#         "Graduation Year": "2025",
+#         "most important": "course quality",
+#     }
+#     ave = calculate_ratings(user_preferences)
+#     get_top_courses(ave, 4)
 
 
 if __name__ == '__main__':
