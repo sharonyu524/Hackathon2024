@@ -41,7 +41,7 @@ def calculate_ratings(user_preferences):
     for course, info in data.items():
         # calculate weighted average
         # add to ratings dictionary
-        print(user_preferences["careerPath"][0]['label'])
+        # print(user_preferences["careerPath"][0]['label'])
         if user_preferences["careerPath"][0]['label']== info["careerTags"]:
             print(user_preferences["careerPath"])
             tagVariable = 1
@@ -98,35 +98,61 @@ def calculate_ratings(user_preferences):
 
 def get_top_courses(courses, graduation, current):
     # return a list of the top num_courses courses
-    if (current == graduation):
-        numCourses = 2
-    if (current == "24Fall" and graduation == "25Spring"
-        or current == "24Spring" and graduation == "24Fall"
-        or current == "25Spring" and graduation == "25SFall"):
-        numCourses = 4
+    semester = ["24Spring", "24Fall", "25Spring", "25Fall"]
+    curIdx = 0 
+    gradIdx = 0
+    springCount = 0
+    fallCount = 0
+    for i in range(len(semester)):
+        if semester[i] == current:
+            curIdx = i
+        if semester[i] == graduation:
+            gradIdx = i
+    numCourses = (curIdx - gradIdx + 1) * 2 
+
+    for season in semester[curIdx:gradIdx+1]:
+        if season == "24Spring" or season == "25Spring":
+            springCount += 1
+        else:
+            fallCount += 1    
+    # if (current == graduation):
+    #     numCourses = 2
+    # elif (current == "24Spring" and graduation == "24Fall"
+    #     or current == "24Fall" and graduation == "25Spring"
+    #     or current == "25Spring" and graduation == "25SFall"):
+    #     numCourses = 4
     
-    elif (current == "24Spring" and graduation == "25Spring"):
-        numCourses = 6
-    elif (current == "24Fall" and graduation == "25Spring"):
-        numCourses = 8
-    else:
-        numCourses = 0
+    # elif (current == "24Spring" and graduation == "25Spring"):
+    #     numCourses = 6
+    # elif (current == "24Fall" and graduation == "25Fall"):
+    #     numCourses = 8
+    # else:
+    #     numCourses = 0
     sorted_courses = sorted(courses.items(), key=lambda x: x[1]['Average'], reverse=True)
     top_fall_courses = [course for course, details in sorted_courses if 'Fall' in details['Semester Offered']]
+    # print("top fall courses", top_fall_courses)
     top_spring_courses = [course for course, details in sorted_courses if 'Spring' in details['Semester Offered']]
+    # print("top spring courses", top_spring_courses)
 
     unique_fall_courses = top_fall_courses
+    # print("unique fall courses", unique_fall_courses)
     unique_spring_courses = [course for course in top_spring_courses if course not in top_fall_courses]
+    # print("unique spring courses", unique_spring_courses)
 
     # Select the top courses based on numCourses
-    selected_fall_courses = unique_fall_courses[:numCourses // 2]
-    selected_spring_courses = unique_spring_courses[:numCourses // 2]
+    print("numCourses", numCourses)
+    selected_fall_courses = unique_fall_courses[:fallCount*2]
+    print("selected fall courses", selected_fall_courses)
+    selected_spring_courses = unique_spring_courses[:springCount*2]
+    print("selected spring courses", selected_spring_courses)
 
     top_courses = selected_fall_courses + selected_spring_courses
     # top_courses = top_fall_courses + top_spring_courses
-    # print(top_courses)
-
-    return top_courses
+    print(top_courses)
+    res = {}
+    for top in top_courses:
+        res[top] = data[top]
+    return res
 
 # { user_preferences format 
 #       careerPath,
@@ -161,7 +187,9 @@ def api_get_top_courses():
     #     return jsonify({'error': 'Missing courses data'}), 400
 
     top_courses = get_top_courses(ratings, user_preferences["graduation"], user_preferences["currentSemester"])
-    return jsonify(top_courses)
+    jsonTopCourses = jsonify(top_courses)
+    # print(jsonTopCourses)
+    return jsonTopCourses
 
 
 

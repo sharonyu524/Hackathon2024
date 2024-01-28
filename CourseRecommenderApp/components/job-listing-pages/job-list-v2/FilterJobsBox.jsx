@@ -17,6 +17,7 @@ const FilterJobsBox = ({ searchParams }) => {
       try {
         const fetchedCourses = searchParams ? await getCourses(searchParams) : await getCourses();
         setCourses(Object.entries(fetchedCourses));
+        console.log('fetchedCourses', fetchedCourses)
       } catch (error) {
         console.error('Error fetching courses:', error);
       }
@@ -47,6 +48,7 @@ const FilterJobsBox = ({ searchParams }) => {
 
   return (
     <div className="course-list">
+      
       {courses.map(([courseName, courseDetails], index) => (
         <div className="job-block" key={index}>
           <div className="inner-box">
