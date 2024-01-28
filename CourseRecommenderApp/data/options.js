@@ -10,7 +10,6 @@ const careerOptions = [
     { value: 'academia', label: 'Academia' },
     { value: 'computerVisionEngineer', label: 'Computer Vision Engineer' },
     { value: 'animationEngineer', label: 'Animation Engineer' },
-    { value: 'animation', label: 'Animation' },
     { value: 'cyberSecurity', label: 'Cyber Security' },
     { value: 'hardwareDesign', label: 'Hardware Design' },
     { value: 'hciPractitioner', label: 'HCI Practitioner' },
