@@ -57,12 +57,15 @@ const FilterJobsBox = ({ searchParams }) => {
 
               </h4>
 
-              {/* Career Tags */}
-              <ul className="job-other-info" style={{ display: 'flex', flexWrap: 'wrap' }}>
-                Related Career Path: {courseDetails.careerTags.map((tag, tagIndex) => (
-                  <li key={tagIndex} className="time">{tag}</li>
-                ))}
-              </ul>
+              {/* Display Career Tags only if they exist */}
+              {courseDetails.careerTags && courseDetails.careerTags.length > 0 && (
+                <ul className="job-other-info" style={{ display: 'flex', flexWrap: 'wrap' }}>
+                  Related Career Path:
+                  {courseDetails.careerTags.map((tag, tagIndex) => (
+                    <li key={tagIndex} className="time">{tag}</li>
+                  ))}
+                </ul>
+              )}
 
               <p>{courseDetails.description}</p>
 
