@@ -28,30 +28,34 @@ def calculate_ratings(user_preferences):
     # if workload matters the most (more practice): weighted_average = (tagged * 0.5) + (course_quality * 0.1) + (instructor_quality * 0.1) + (difficulty * 0.1) + (workload * 0.2)
     #  if less work: weighted_average = (tagged * 0.5) + (course_quality * 0.1) + (instructor_quality * 0.1) + (difficulty * 0.1) + ((5 - workload) * 0.2)
     ratings = {}
-    tagVariable = 0 
-    tagCoefficient = 0.5
-    courseQualityCoefficient = 0.1 
-    courseQualityVariable = 0
-    instructorQualityCoefficient = 0.1
-    instructorQualityVariable = 0
-    difficultyCoefficient = 0.1
-    difficultyVariable = 0
-    workloadCoefficient = 0.1
-    workloadVariable = 0
+    
     for course, info in data.items():
+        tagVariable = 0 
+        tagCoefficient = 0.5
+        courseQualityCoefficient = 0.1 
+        courseQualityVariable = 0
+        instructorQualityCoefficient = 0.1
+        instructorQualityVariable = 0
+        difficultyCoefficient = 0.1
+        difficultyVariable = 0
+        workloadCoefficient = 0.1
+        workloadVariable = 0
         # calculate weighted average
         # add to ratings dictionary
         # print(user_preferences["careerPath"][0]['label'])
-        if user_preferences["careerPath"][0]['label']== info["careerTags"]:
-            print(user_preferences["careerPath"])
-            tagVariable = 1
-        if user_preferences["categories"] == "Course Qquality":
+        # print(user_preferences["careerPath"][0]['label'], info["careerTags"][0])
+        if user_preferences["careerPath"][0]['label']== info["careerTags"][0]:
+            # print(user_preferences["careerPath"])
+            tagVariable = 5
+        # print(user_preferences["categories"] == "Course Quality")
+        if user_preferences["categories"] == "Course Quality":
             val = info.get("Course Quality", "N/A")
             if val == "N/A":
                 courseQualityVariable = 0
             else:
                 courseQualityVariable = float(info["Course Quality"])
             courseQualityCoefficient = 0.2
+            
         elif user_preferences["categories"] == "Instructor Quality":
             val = info.get("Instructor Quality", "N/A")
             if val == "N/A":
@@ -87,11 +91,25 @@ def calculate_ratings(user_preferences):
             else:
                 workloadVariable = 5 - float(info["Workload"])
             workloadCoefficient = 0.2
-        
+        # if "5480" in course:
+        #     print("course", course)
+        #     print("tagVariable", tagVariable)
+        #     print("courseQualityVariable", courseQualityVariable)
+        #     print("instructorQualityVariable", instructorQualityVariable)
+        #     print("difficultyVariable", difficultyVariable)
+        #     print("workloadVariable", workloadVariable)
+        # if "5620" in course:
+        #     print("course", course)
+        #     print("tagVariable", tagVariable)
+        #     print("courseQualityVariable", courseQualityVariable)
+        #     print("instructorQualityVariable", instructorQualityVariable)
+        #     print("difficultyVariable", difficultyVariable)
+        #     print("workloadVariable", workloadVariable)
         weighted_average = (tagVariable * tagCoefficient) + (courseQualityVariable * courseQualityCoefficient) + (instructorQualityVariable * instructorQualityCoefficient) + (difficultyVariable * difficultyCoefficient) + (workloadVariable * workloadCoefficient)
         ratings[course] = {}
         ratings[course]["Average"] = weighted_average
         ratings[course]["Semester Offered"] = info["Semester Offered"]
+        
     # print(ratings)
     return ratings
 
@@ -140,18 +158,19 @@ def get_top_courses(courses, graduation, current):
     # print("unique spring courses", unique_spring_courses)
 
     # Select the top courses based on numCourses
-    print("numCourses", numCourses)
+    # print("numCourses", numCourses)
     selected_fall_courses = unique_fall_courses[:fallCount*2]
-    print("selected fall courses", selected_fall_courses)
+    # print("selected fall courses", selected_fall_courses)
     selected_spring_courses = unique_spring_courses[:springCount*2]
-    print("selected spring courses", selected_spring_courses)
+    # print("selected spring courses", selected_spring_courses)
 
     top_courses = selected_fall_courses + selected_spring_courses
     # top_courses = top_fall_courses + top_spring_courses
-    print(top_courses)
+ 
     res = {}
     for top in top_courses:
         res[top] = data[top]
+
     return res
 
 # { user_preferences format 
@@ -185,10 +204,12 @@ def api_get_top_courses():
 
     # if not courses:
     #     return jsonify({'error': 'Missing courses data'}), 400
-
+    # print(ratings)
     top_courses = get_top_courses(ratings, user_preferences["graduation"], user_preferences["currentSemester"])
+    # print(top_courses)
     jsonTopCourses = jsonify(top_courses)
-    # print(jsonTopCourses)
+    print('final')
+    print(jsonTopCourses.Stringify)
     return jsonTopCourses
 
 
