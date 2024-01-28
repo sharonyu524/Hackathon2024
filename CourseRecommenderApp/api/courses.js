@@ -6,6 +6,7 @@ export const getCourses = async (searchParams) => {
     if (Object.keys(searchParams).length > 0) {
         try {
             const response = await axios.post(localUrl, searchParams);
+            console.log('response: ', response.data);
             return response.data;
         } catch (err) {
             console.log('error fetching courses: ', err.message);
