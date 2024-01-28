@@ -534,6 +534,19 @@ Job Section
   color: #34a853;
 }
 
+.job-other-info li.semester {
+  background-color: #e6e6fa;
+  color: #9370db;
+  padding: 5px 10px;
+  /* Padding for better visibility */
+  margin: 5px;
+  /* Margin to separate the tags */
+  border-radius: 5px;
+  /* Rounded corners for the tags */
+  font-size: 0.9em;
+  /* Adjust the font size as needed */
+}
+
 .job-other-info li.required {
   background: rgba(249, 171, 0, 0.15);
   color: var(--primary-2nd-color);

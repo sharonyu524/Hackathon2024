@@ -48,7 +48,7 @@ const FilterJobsBox = ({ searchParams }) => {
 
   return (
     <div className="course-list">
-      
+
       {courses.map(([courseName, courseDetails], index) => (
         <div className="job-block" key={index}>
           <div className="inner-box">
@@ -56,8 +56,17 @@ const FilterJobsBox = ({ searchParams }) => {
 
               <h4>
                 <Link href={`https://penncoursereview.com${courseDetails["Link"]}`}>{courseName}</Link>
-
               </h4>
+
+              {/* Semester Offered */}
+              {courseDetails["Semester Offered"] && (
+                <ul className="job-other-info" style={{ display: 'flex', flexWrap: 'wrap' }}>
+                  Semester Offered:
+                  {courseDetails["Semester Offered"].map((semester, semesterIndex) => (
+                    <li key={semesterIndex} className="semester">{semester}</li>
+                  ))}
+                </ul>
+              )}
 
               {/* Display Career Tags only if they exist */}
               {courseDetails.careerTags && courseDetails.careerTags.length > 0 && (
