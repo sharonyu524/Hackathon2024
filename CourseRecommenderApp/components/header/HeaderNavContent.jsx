@@ -17,7 +17,7 @@ const HeaderNavContent = () => {
           {/* End homepage menu items */}
 
           {/* Find Jobs link */}
-          <li className={isActiveLink('/job-list', usePathname()) ? "current" : ""}>
+          <li className={isActiveLink('/job-list-v2', usePathname()) ? "current" : ""}>
             <Link href="/job-list-v2">Browse Courses</Link> {/* Update the href to your job list route */}
           </li>
           {/* End findjobs menu items */}

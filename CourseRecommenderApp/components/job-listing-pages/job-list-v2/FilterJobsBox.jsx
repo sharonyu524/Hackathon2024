@@ -15,78 +15,76 @@ const FilterJobsBox = ({ searchParams }) => {
     const fetchCourses = async () => {
       console.log('searchParams', searchParams)
       try {
-        const fetchedCourses = await getCourses(searchParams);
+        const fetchedCourses = searchParams ? await getCourses(searchParams) : await getCourses();
         setCourses(Object.entries(fetchedCourses));
       } catch (error) {
         console.error('Error fetching courses:', error);
       }
     };
 
-    if (searchParams) {
-      fetchCourses();
-    }
+    fetchCourses();
   }, [searchParams]);
 
   const getDifficultyClass = (value) => {
-    if (value >= 0 && value < 2.5) {
+    if (value >= 0 && value < 2) {
       return "privacy"
     } else if (value < 3.5) {
       return "required"
-    } return "time"
+    } return "bad"
   }
 
   const getQualityClass = (value) => {
-    if (value >= 0 && value < .5) {
-      return "time"
+    if (value >= 0 && value < 2.5) {
+      return "bad"
     } else if (value < 3.5) {
       return "required"
     } return "privacy"
   }
   // privacy: green
-  // time: red
+  // bad: red
   // required: yellow
 
 
   return (
     <div className="course-list">
-      {courses.map(([courseName, courseDatails], index) => (
+      {courses.map(([courseName, courseDetails], index) => (
         <div className="job-block" key={index}>
           <div className="inner-box">
             <div className="content">
 
               <h4>
-                <Link href={`https://penncoursereview.com${courseDatails["Link"]}`}>{courseName}</Link>
+                <Link href={`https://penncoursereview.com${courseDetails["Link"]}`}>{courseName}</Link>
 
               </h4>
 
               {/* Career Tags */}
               <ul className="job-other-info" style={{ display: 'flex', flexWrap: 'wrap' }}>
-                Related Career Path: {courseDatails.careerTags.map((tag, tagIndex) => (
-                  <li key={tagIndex} className="career">{tag}</li>
+                Related Career Path: {courseDetails.careerTags.map((tag, tagIndex) => (
+                  <li key={tagIndex} className="time">{tag}</li>
                 ))}
               </ul>
 
-              <p>{courseDatails.description}</p>
+              <p>{courseDetails.description}</p>
 
               <ul className="job-other-info" style={{ display: 'flex', justifyContent: 'space-evenly' }}>
-                <li className={getQualityClass(courseDatails["Course Quality"])}>
+                <li className={getQualityClass(courseDetails["Course Quality"])}>
                   <span className="icon flaticon-star"></span>
-                  Course Quality: {courseDatails["Course Quality"]}
+                  Course Quality: {courseDetails["Course Quality"]}
                 </li>
                 {/* compnay info */}
-                <li className={getQualityClass(courseDatails["Instructor Quality"])}>
+                <li className={getQualityClass(courseDetails["Instructor Quality"])}>
                   <span className="icon flaticon-man"></span>
-                  Instructor Quality: {courseDatails["Instructor Quality"]}
+                  Instructor Quality: {courseDetails["Instructor Quality"]}
                 </li>
                 {/* location info */}
-                <li className={getDifficultyClass(courseDatails.Difficulty)}>
+                <li className={getDifficultyClass(courseDetails.Difficulty)}>
                   <span className="icon flaticon-notebook"></span>
-                  Difficulty: {courseDatails.Difficulty}
+                  Difficulty: {courseDetails.Difficulty}
                 </li>
                 {/* time info */}
-                <li className={getDifficultyClass(courseDatails.Workload)}>
+                <li className={getDifficultyClass(courseDetails.Workload)}>
                   <span className="icon flaticon-clock-3"></span>
-                  Workload: {courseDatails.Workload}
+                  Workload: {courseDetails.Workload}
                 </li>
                 {/* salary info */}
               </ul>

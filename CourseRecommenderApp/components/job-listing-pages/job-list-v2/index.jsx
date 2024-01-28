@@ -7,10 +7,6 @@ import React, { useState } from 'react';
 
 const index = () => {
   const [searchParams, setSearchParams] = useState({
-    careerPath: [],
-    currentSemester: '',
-    graduation: '',
-    categories: '',
   });
 
   const handleSearchSubmit = (newSearchParams) => {
