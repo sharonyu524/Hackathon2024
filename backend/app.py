@@ -41,8 +41,9 @@ def calculate_ratings(user_preferences):
     for course, info in data.items():
         # calculate weighted average
         # add to ratings dictionary
-       
-        if user_preferences["careerPath"][0].label == info["careerTags"]:
+        print(user_preferences["careerPath"][0]['label'])
+        if user_preferences["careerPath"][0]['label']== info["careerTags"]:
+            print(user_preferences["careerPath"])
             tagVariable = 1
         if user_preferences["categories"] == "Course Qquality":
             val = info.get("Course Quality", "N/A")
@@ -91,7 +92,7 @@ def calculate_ratings(user_preferences):
         ratings[course] = {}
         ratings[course]["Average"] = weighted_average
         ratings[course]["Semester Offered"] = info["Semester Offered"]
-    print(ratings)
+    # print(ratings)
     return ratings
 
 
@@ -123,7 +124,7 @@ def get_top_courses(courses, graduation, current):
 
     top_courses = selected_fall_courses + selected_spring_courses
     # top_courses = top_fall_courses + top_spring_courses
-    print(top_courses)
+    # print(top_courses)
 
     return top_courses
 
@@ -136,8 +137,10 @@ def get_top_courses(courses, graduation, current):
 
 @app.route('/get_top_courses', methods=['POST'])
 def api_get_top_courses():
-    data = request.json  # Get data from POST request
-    user_preferences = data.get('user_preferences')
+    user_preferences = request.json  # Get data from POST request
+    # print(data)
+    # user_preferences = data.get('searchParams')
+    # print(user_preferences)
     # courses = data.get('courses')
 
     if not user_preferences:
